@@ -13,20 +13,38 @@
   <!-- Load socket.io from your backend -->
   <script src="https://backened-1-jhjm.onrender.com/socket.io/socket.io.js"></script>
   <script>
+    console.log("🔄 Connecting to chat backend...");
     const socket = io("https://backened-1-jhjm.onrender.com");
-    const sendBtn = document.getElementById("sendBtn");
-    const messageInput = document.getElementById("message");
-    const allMessages = document.getElementById("messages");
+
+    socket.on("connect", () => {
+      console.log("✅ Connected to backend!");
+    });
+
+    socket.on("connect_error", (err) => {
+      console.error("❌ Connection failed:", err);
+      alert("Error: Could not connect to backend.");
+    });
 
     socket.on("message", (msg) => {
+      console.log("📩 New message:", msg);
       const p = document.createElement("p");
       p.innerText = msg;
       allMessages.appendChild(p);
     });
 
+    const sendBtn = document.getElementById("sendBtn");
+    const messageInput = document.getElementById("message");
+    const allMessages = document.getElementById("messages");
+
     sendBtn.addEventListener("click", () => {
-      const msg = messageInput.value;
+      const msg = messageInput.value.trim();
+      if (!msg) {
+        alert("⚠️ Please enter a message!");
+        return;
+      }
+      console.log("📤 Sending:", msg);
       socket.emit("user-message", msg);
+      messageInput.value = "";
     });
   </script>
 </body>
