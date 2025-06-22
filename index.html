@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chat App</title>
+</head>
+<body>
+  <h1>Chatting</h1>
+  <input type="text" id="message" placeholder="Enter message" />
+  <button id="sendBtn">Send</button>
+  <div id="messages"></div>
+
+  <!-- Load socket.io from your backend -->
+  <script src="https://backened-1-jhjm.onrender.com/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io("https://backened-1-jhjm.onrender.com");
+    const sendBtn = document.getElementById("sendBtn");
+    const messageInput = document.getElementById("message");
+    const allMessages = document.getElementById("messages");
+
+    socket.on("message", (msg) => {
+      const p = document.createElement("p");
+      p.innerText = msg;
+      allMessages.appendChild(p);
+    });
+
+    sendBtn.addEventListener("click", () => {
+      const msg = messageInput.value;
+      socket.emit("user-message", msg);
+    });
+  </script>
+</body>
+</html>
